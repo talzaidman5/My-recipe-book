@@ -6,3 +6,20 @@
 //
 
 import Foundation
+
+class User : Codable{
+    var name : String?
+    var email : String?
+    var password : String?
+    
+    init( email : String, name : String, pass : String){
+        self.name = name
+        self.password = pass
+        self.email = email
+    }
+    
+    func encodable() -> Dictionary<String, Any>{
+        return
+            [ "name" : self.name ?? "","email" : self.email ?? "", "password" : self.password ?? ""]
+    }
+}
