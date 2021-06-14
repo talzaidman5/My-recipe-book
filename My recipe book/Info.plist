@@ -62,5 +62,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key></key>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ulpoad images</string>
 </dict>
 </plist>

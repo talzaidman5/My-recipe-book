@@ -13,6 +13,8 @@ class SignUpController : UIViewController{
     @IBOutlet weak var signUp_txt_mail: UITextField!
     @IBOutlet weak var signUp_txt_name: UITextField!
     @IBOutlet weak var signUp_txt_password: UITextField!
+    @IBOutlet weak var signUp_txt_errors: UILabel!
+    static var user : User?
 
     @IBAction func signUp(_sender : Any){
         if FirebaseApp.app() == nil { FirebaseApp.configure()}
@@ -21,18 +23,17 @@ class SignUpController : UIViewController{
         let email = signUp_txt_mail.text!
         Auth.auth().createUser(withEmail: email, password: passwrod){(result,err) in
             if err != nil{
-                self.signUp_txt_name.text = err?.localizedDescription
-                self.signUp_txt_name.textColor = UIColor.red
+                self.signUp_txt_errors.text = err?.localizedDescription
+                self.signUp_txt_errors.textColor = UIColor.red
             }
-            if (result != nil){
+            else {
+                self.signUp_txt_errors.text = ""
+            }
+                if (result != nil){
                 let db = Firestore.firestore()
                     let user = User(email: email, name: userName, pass: passwrod)
                     db.collection("Users").document(email).setData(user.encodable())
-                let dict = ["email": user.email,
-                            "name": user.name]
-
-                db.collection("users").addDocument(data: dict as [String : Any])
-
+                    ViewController.user = User(email: user.email!, name: user.name!, pass: user.password!)
                     self.goToSignIn()
                 }
             }
