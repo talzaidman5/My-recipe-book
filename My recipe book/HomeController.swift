@@ -24,17 +24,17 @@ class HomeController : UIViewController{
                print("Error getting documents: \(err)")
            } else {
                for document in querySnapshot!.documents {
-                let recipe =  self.InitRecipe(recipe: document.data());
+                let recipe =  self.InitRecipe(document: document)
                 HomeController.recipeList.append(recipe)
                }
            }
        }
 
    }
-    func InitRecipe(recipe: [String: Any]) -> Recipe{
-        return Recipe(name: Array(recipe.values)[1] as! String, ingredients: Array(recipe.values)[0] as! String, type: Array(recipe.values)[2]  as! String)
-    
-
+    func InitRecipe(document: QueryDocumentSnapshot) -> Recipe{
+        return Recipe(  name: document.get("name") as! String,
+                                 ingredients: document.get("ingredients") as! String,
+                                 type: document.get("type") as! String)
     }
 
 }

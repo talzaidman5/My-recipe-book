@@ -15,6 +15,11 @@ class AllRecipeController:  UIViewController, UITableViewDelegate,UITableViewDat
     @IBOutlet weak var allRecipe: UITableView!
    var homeController = HomeController()
     let cellId = "recipe"
+    var temp : Recipe!
+    @IBOutlet weak var allRecipe_BTN_starters: UIButton!
+    @IBOutlet weak var allRecipe_BTN_mainDishes: UIButton!
+    @IBOutlet weak var allRecipe_BTN_desserts: UIButton!
+    var listToUpdate : [Recipe] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +55,36 @@ class AllRecipeController:  UIViewController, UITableViewDelegate,UITableViewDat
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let nextViewController = storyBoard.instantiateViewController(withIdentifier: "RecipeController") as! RecipeController
         self.present(nextViewController, animated:true, completion:nil)
-
-
     }
+    @IBAction func updateTable(_sender : Any){
+        update(typeClick: "Starers")
+    }
+    func update(typeClick: String){
+        let db = Firestore.firestore()
+       db.collection("Users").document((ViewController.user?.email)!).collection("recipes").getDocuments() { (document, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                for document in document!.documents {
+                    let type = document.get("type") as! String
+                    if(type == typeClick){
+                        self.temp = Recipe(name: document.get("name") as! String,
+                                                 ingredients: document.get("ingredients") as! String,
+                                                 type: document.get("type") as! String)
+                        self.listToUpdate.append(self.temp)
+                        print("***" ,self.temp)
+                      
+                        
+                    }
+
+                }
+            }
+       
+            self.UpdateTableList(typeClick: self.listToUpdate)
+    }
+    
+    }
+    func UpdateTableList(typeClick: [Recipe]){
+    }
+
 }

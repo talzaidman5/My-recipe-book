@@ -17,7 +17,12 @@ class User : Codable{
         self.password = pass
         self.email = email
     }
-    
+    var dictionary : [String:Any] {
+        return [
+             "name" : self.name ?? "","email" : self.email ?? "", "password" : self.password ?? ""
+        ]
+    }
+
     func encodable() -> Dictionary<String, Any>{
         return
             [ "name" : self.name ?? "","email" : self.email ?? "", "password" : self.password ?? ""]

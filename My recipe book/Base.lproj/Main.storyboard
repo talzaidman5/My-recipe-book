@@ -124,6 +124,9 @@
                                         <state key="normal" title="Starters">
                                             <color key="titleColor" systemColor="labelColor"/>
                                         </state>
+                                        <connections>
+                                            <action selector="updateTableWith_sender:" destination="bZs-Ax-LeW" eventType="touchUpInside" id="V9R-os-DvG"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Eya-Us-laL">
                                         <rect key="frame" x="0.0" y="297" width="394" height="44"/>
@@ -182,6 +185,9 @@
                     <navigationItem key="navigationItem" id="rhH-U3-E9E"/>
                     <connections>
                         <outlet property="allRecipe" destination="yLc-IU-lGv" id="XfQ-wc-oLX"/>
+                        <outlet property="allRecipe_BTN_desserts" destination="phs-z0-YYh" id="a2G-k8-u9k"/>
+                        <outlet property="allRecipe_BTN_mainDishes" destination="Eya-Us-laL" id="fQq-zU-CD3"/>
+                        <outlet property="allRecipe_BTN_starters" destination="SZY-sv-BrD" id="ZTe-Vb-P7a"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LHm-Dh-c44" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -197,10 +203,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="IUV-pn-PbF">
-                                <rect key="frame" x="10" y="146" width="394" height="510.5"/>
+                                <rect key="frame" x="10" y="146" width="394" height="550.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bnI-y5-bPC">
-                                        <rect key="frame" x="0.0" y="0.0" width="394" height="60"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="394" height="100"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="60" id="g01-js-tJR"/>
                                             <constraint firstAttribute="height" constant="100" id="htN-Ph-1wE"/>
@@ -210,13 +216,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tqC-Lf-QVU">
-                                        <rect key="frame" x="0.0" y="70" width="394" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="110" width="394" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Ingredients" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="iXP-qR-k6t">
-                                        <rect key="frame" x="0.0" y="100.5" width="394" height="150"/>
+                                        <rect key="frame" x="0.0" y="140.5" width="394" height="150"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="150" id="WBd-gn-JXf"/>
@@ -226,7 +232,7 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v9W-Bc-98i">
-                                        <rect key="frame" x="0.0" y="260.5" width="394" height="250"/>
+                                        <rect key="frame" x="0.0" y="300.5" width="394" height="250"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eDO-Uq-5bj">
                                                 <rect key="frame" x="124" y="-8" width="240" height="128"/>
