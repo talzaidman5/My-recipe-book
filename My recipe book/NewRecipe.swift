@@ -20,10 +20,14 @@ class NewRecipe: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate,
     @IBOutlet weak var newRecipe_TXT_name: UITextField!
     @IBOutlet weak var newRecipe_TXT_ingredients: UITextView!
     @IBOutlet weak var newRecipe_BTN_add: UIButton!
+    @IBOutlet weak var newRecipe_txt_error: UILabel!
+    var result = [String]()
     private let storge = Storage.storage().reference()
     override func viewDidLoad() {
         super.viewDidLoad()
-        pickerData = ["Starters", "Main dishes", "desserts"]
+        getAllRecipeName()
+        newRecipe_txt_error.text = ""
+        pickerData = ["Starters", "Main dishes", "Desserts"]
         newRecipe_pickerView_category.dataSource = self
         newRecipe_pickerView_category.delegate = self
     }
@@ -43,6 +47,7 @@ class NewRecipe: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate,
     @IBAction func AddRecipe(_sender : Any){
 
     let db = Firestore.firestore()
+        if(checkRecipe() == true){
         let user = db.collection("Users").whereField("email", isEqualTo: ViewController.user?.email as Any)
         user.getDocuments(completion: { [self] (result, err) in
             if err != nil {
@@ -59,7 +64,41 @@ class NewRecipe: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate,
                 dismiss(animated: true, completion: nil)
             }
         })
+        }
+        }
+func getAllRecipeName()
+    {
+    let db = Firestore.firestore()
+
+    db.collection("Users").document((ViewController.user?.email)!).collection("recipes").getDocuments() { (document, err) in
+          if let err = err {
+              print("Error getting documents: \(err)")
+          } else {
+              for document in document!.documents {
+                  let name = document.get("name") as! String
+                    self.result.append(name)
+              }
+          }
     }
+    }
+    func checkRecipe()-> Bool{
+        if(self.newRecipe_TXT_name.text == nil){
+            newRecipe_txt_error.text = "Please fill in the name of the recipe"
+            return false
+        }
+        if(self.newRecipe_TXT_ingredients.text == "Ingredients"){
+            newRecipe_txt_error.text = "Please fill in the ingredients of the recipe"
+            return false
+        }
+        for name in self.result {
+            if(name == self.newRecipe_TXT_name.text){
+                  self.newRecipe_txt_error.text = "Name already exists"
+                  return false
+              }
+            }
+        return true
+    }
+
     @IBAction func UploadPhotos(_sender : Any){
         let picker = UIImagePickerController()
         picker.sourceType = .photoLibrary
@@ -78,21 +117,12 @@ class NewRecipe: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate,
             return
         }
         let email = (ViewController.user?.email)!
-        _ = storge.child(email + "/file" + String(counter) + ".png").putData(imageData, metadata: nil, completion: {_, error
+            storge.child(email + "/" + newRecipe_TXT_name.text! + ".png").putData(imageData, metadata: nil, completion: {_, error
             in guard error == nil else{
             print("failed to upload")
             return
         }
-        self.storge.child(email + "/file" + String(self.counter) + ".png").downloadURL(completion: {url, error in
-            guard let url = url, error == nil
-            else{
-                return
-            }
-            let urlString = url.absoluteString
-            print("downloadURL")
-            UserDefaults.standard.set(urlString, forKey: "url")
-        })
-        })
+    })
         counter+=1
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
