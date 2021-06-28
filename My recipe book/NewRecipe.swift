@@ -123,7 +123,6 @@ func getAllRecipeName()
             return
         }
     })
-        counter+=1
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true,completion: nil)

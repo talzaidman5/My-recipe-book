@@ -10,7 +10,7 @@ import UIKit
 import FirebaseStorage
 import FirebaseFirestore
 
-class RecipeController: UIViewController{
+class RecipeController: UIViewController,UIImagePickerControllerDelegate & UINavigationControllerDelegate{
     
     @IBOutlet weak var recipe_TXT_name: UITextField!
     @IBOutlet weak var recipe_TXT_ingredients: UITextField!
@@ -25,7 +25,8 @@ class RecipeController: UIViewController{
     var imageEditing = UIImage()
     var imageEdit = UIImage()
     var lastRecipe : Recipe?
-    
+    var image = UIImage()
+    var recipe : Recipe?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.name =  UserDefaults.standard.string(forKey: "name")!
@@ -48,8 +49,8 @@ class RecipeController: UIViewController{
         storge.child(ViewController.user!.email! + "/" + name + ".png").getData(maxSize: 1 * 1024 * 1024) { data, error in
             if error != nil {
             } else {
-              let image = UIImage(data: data!)
-              self.recipe_image.image = image
+                self.image = UIImage(data: data!)!
+                self.recipe_image.image = self.image
         }
         }
         }
@@ -74,7 +75,7 @@ class RecipeController: UIViewController{
                     if err != nil {
                         print("Error getting documents")
                     } else {
-                        let recipe = Recipe(name: self.recipe_TXT_name.text!,ingredients: self.recipe_TXT_ingredients.text!, type:
+                        recipe = Recipe(name: self.recipe_TXT_name.text!,ingredients: self.recipe_TXT_ingredients.text!, type:
                                             self.type)
                         let db = Firestore.firestore()
                         db.collection("Users").document((ViewController.user?.email)!).collection("recipes").getDocuments() { (document, err) in
@@ -84,16 +85,18 @@ class RecipeController: UIViewController{
                                   for document in document!.documents {
                                       let nameRecipe = document.get("name") as! String
                                     if(nameRecipe == self.name){
-                                        db.collection("Users").document((ViewController.user?.email)!).collection("recipes").document(document.documentID).updateData(["name" : recipe.name as Any,
-                                                                                                                                                                      "ingredients": recipe.ingredients as Any])
-                                      
+                                        db.collection("Users").document((ViewController.user?.email)!).collection("recipes").document(document.documentID).updateData(["name" : recipe!.name as Any,
+                                                                                                                                                                       "ingredients": recipe!.ingredients as Any])
+                                        if(lastRecipe!.name != recipe!.name)
+                                        {
+                                            UploadPhoto()
+                                        }
                                         let index =  HomeController.recipeList.firstIndex(of: lastRecipe!)
                                         HomeController.recipeList.remove(at: index!)
-                                        HomeController.recipeList.append(recipe)
+                                        HomeController.recipeList.append(recipe!)
                                         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
                                         let nextViewController = storyBoard.instantiateViewController(withIdentifier: "HomeController") as! HomeController
                                         self.present(nextViewController, animated:true, completion:nil)
-
                                     }
                                   }
                               }
@@ -120,5 +123,25 @@ class RecipeController: UIViewController{
                   }
               }
         }
+        let storge = Storage.storage().reference()
+        storge.child((ViewController.user?.email)! + "/" + lastRecipe!.name! + ".png").delete()
+
+    }
+    
+     func UploadPhoto(){
+   
+        let email = (ViewController.user?.email)!
+        let storge = Storage.storage().reference()
+        storge.child(email + "/" + lastRecipe!.name! + ".png").delete()
+
+        storge.child(email + "/" + recipe!.name! + ".png").putData(self.image.pngData()!, metadata: nil, completion: {_, error
+            in guard error == nil else{
+            print("failed to upload")
+            return
+        }
+    })
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true,completion: nil)
     }
 }
