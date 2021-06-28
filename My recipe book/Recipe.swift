@@ -6,7 +6,11 @@
 //
 
 import Foundation
-class Recipe : Codable{
+class Recipe : Codable , Equatable{
+    static func == (lhs: Recipe, rhs: Recipe) -> Bool {
+        return lhs.name == rhs.name
+    }
+    
 
 
     var name : String?

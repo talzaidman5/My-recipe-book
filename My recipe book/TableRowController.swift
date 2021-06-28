@@ -22,7 +22,7 @@ class TableRowController:  UIViewController, UITableViewDelegate,UITableViewData
         UserDefaults.standard.set(self.recipeList[index].ingredients, forKey: "ingredients")
         UserDefaults.standard.set(self.recipeList[index].type, forKey: "type")
 
-        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+      let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let nextViewController = storyBoard.instantiateViewController(withIdentifier: "RecipeController") as! RecipeController
         self.present(nextViewController, animated:true, completion:nil)
     }

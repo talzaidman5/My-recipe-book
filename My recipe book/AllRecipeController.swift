@@ -23,7 +23,7 @@ class AllRecipeController:  UIViewController  {
     }
 
     @IBAction func updateTableMainDishes(_sender : Any){
-        update(typeClick: "Main Dishes")
+        update(typeClick: "Main dishes")
     }
     @IBAction func updateTableDesserts(_sender : Any){
         update(typeClick: "Desserts")
