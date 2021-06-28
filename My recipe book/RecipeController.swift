@@ -10,7 +10,7 @@ import UIKit
 import FirebaseStorage
 import FirebaseFirestore
 
-class RecipeController: UIViewController,UIImagePickerControllerDelegate & UINavigationControllerDelegate{
+class RecipeController: UIViewController{
     
     @IBOutlet weak var recipe_TXT_name: UITextField!
     @IBOutlet weak var recipe_TXT_ingredients: UITextField!
@@ -125,6 +125,9 @@ class RecipeController: UIViewController,UIImagePickerControllerDelegate & UINav
         }
         let storge = Storage.storage().reference()
         storge.child((ViewController.user?.email)! + "/" + lastRecipe!.name! + ".png").delete()
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let nextViewController = storyBoard.instantiateViewController(withIdentifier: "HomeController") as! HomeController
+        self.present(nextViewController, animated:true, completion:nil)
 
     }
     
@@ -141,7 +144,5 @@ class RecipeController: UIViewController,UIImagePickerControllerDelegate & UINav
         }
     })
     }
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true,completion: nil)
-    }
+    
 }
