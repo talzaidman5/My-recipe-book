@@ -42,7 +42,7 @@ class AllRecipeController:  UIViewController  {
                 for document in document!.documents {
                     let type = document.get("type") as! String
                     if(type == typeClick){
-                        self.temp = Recipe(name: document.get("name") as!String, ingredients: document.get("ingredients") as! String,type: document.get("type") as!String)
+                        self.temp = Recipe(name: document.get("name") as!String, ingredients: document.get("ingredients") as! String,type: document.get("type") as!String, id: document.get("imageID") as! String)
                         self.listToUpdate.append(self.temp)
                     }
                 }

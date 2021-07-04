@@ -7,8 +7,8 @@
 
 import Foundation
 import UIKit
-import FirebaseStorage
 import FirebaseFirestore
+import FirebaseStorage
 
 class RecipeController: UIViewController{
     
@@ -20,6 +20,7 @@ class RecipeController: UIViewController{
     var name = ""
     var ingredients = ""
     var type = ""
+    var imageID = ""
     @IBOutlet weak var recipe_image: UIImageView!
     let storage = Storage.storage()
     var imageEditing = UIImage()
@@ -32,6 +33,7 @@ class RecipeController: UIViewController{
         self.name =  UserDefaults.standard.string(forKey: "name")!
         self.ingredients =  UserDefaults.standard.string(forKey: "ingredients")!
         self.type =  UserDefaults.standard.string(forKey: "type")!
+        self.imageID =  UserDefaults.standard.string(forKey: "imageID")!
         recipe_TXT_name.isEnabled = false
         recipe_TXT_ingredients.isEnabled = false
         recipe_TXT_type.text = "Type: " + type
@@ -41,12 +43,13 @@ class RecipeController: UIViewController{
         imageEditing = #imageLiteral(resourceName: "check-mark")
         imageEdit = #imageLiteral(resourceName: "edit")
         lastRecipe = Recipe(name: self.recipe_TXT_name.text!,ingredients: self.recipe_TXT_ingredients.text!, type:
-                            self.type)
+                                self.type, id: UserDefaults.standard.string(forKey: "imageID")!)
 
     }
     func readImages(){
          let storge = Storage.storage().reference()
-        storge.child(ViewController.user!.email! + "/" + name + ".png").getData(maxSize: 1 * 1024 * 1024) { data, error in
+        let id = UserDefaults.standard.string(forKey: "imageID")!
+        storge.child(ViewController.user!.email! + "/" + id + ".png").getData(maxSize: 1 * 1024 * 1024) { data, error in
             if error != nil {
             } else {
                 self.image = UIImage(data: data!)!
@@ -76,7 +79,7 @@ class RecipeController: UIViewController{
                         print("Error getting documents")
                     } else {
                         recipe = Recipe(name: self.recipe_TXT_name.text!,ingredients: self.recipe_TXT_ingredients.text!, type:
-                                            self.type)
+                                            self.type, id: (recipe?.imageID)!)
                         let db = Firestore.firestore()
                         db.collection("Users").document((ViewController.user?.email)!).collection("recipes").getDocuments() { (document, err) in
                               if let err = err {
@@ -87,10 +90,7 @@ class RecipeController: UIViewController{
                                     if(nameRecipe == self.name){
                                         db.collection("Users").document((ViewController.user?.email)!).collection("recipes").document(document.documentID).updateData(["name" : recipe!.name as Any,
                                                                                                                                                                        "ingredients": recipe!.ingredients as Any])
-                                        if(lastRecipe!.name != recipe!.name)
-                                        {
-                                            UploadPhoto()
-                                        }
+                                        
                                         let index =  HomeController.recipeList.firstIndex(of: lastRecipe!)
                                         HomeController.recipeList.remove(at: index!)
                                         HomeController.recipeList.append(recipe!)
@@ -123,26 +123,14 @@ class RecipeController: UIViewController{
                   }
               }
         }
-        let storge = Storage.storage().reference()
-        storge.child((ViewController.user?.email)! + "/" + lastRecipe!.name! + ".png").delete()
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let nextViewController = storyBoard.instantiateViewController(withIdentifier: "HomeController") as! HomeController
         self.present(nextViewController, animated:true, completion:nil)
 
     }
     
-     func UploadPhoto(){
-   
-        let email = (ViewController.user?.email)!
-        let storge = Storage.storage().reference()
-        storge.child(email + "/" + lastRecipe!.name! + ".png").delete()
-
-        storge.child(email + "/" + recipe!.name! + ".png").putData(self.image.pngData()!, metadata: nil, completion: {_, error
-            in guard error == nil else{
-            print("failed to upload")
-            return
-        }
-    })
-    }
+     
+    
+     
     
 }

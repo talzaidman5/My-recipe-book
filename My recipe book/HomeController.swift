@@ -14,6 +14,7 @@ class HomeController : UIViewController{
     var recipe = [String: Any]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        HomeController.recipeList.removeAll()
         home_txt_name.text = "Hi " + (ViewController.user?.name!)!
         InitTable()
     }
@@ -34,7 +35,7 @@ class HomeController : UIViewController{
     func InitRecipe(document: QueryDocumentSnapshot) -> Recipe{
         return Recipe(  name: document.get("name") as! String,
                                  ingredients: document.get("ingredients") as! String,
-                                 type: document.get("type") as! String)
+                                 type: document.get("type") as! String, id: document.get("imageID") as! String)
     }
 
 }

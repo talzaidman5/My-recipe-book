@@ -12,21 +12,27 @@ class Recipe : Codable , Equatable{
     }
     
 
-
+    var imageID : String?
     var name : String?
     var ingredients : String?
     var type : String?
-    var photos = [String]()
 
-    init( name : String, ingredients : String, type : String){
+    init( name : String, ingredients : String, type : String, id : String){
         self.name = name
         self.ingredients = ingredients
         self.type = type
+        self.imageID = id
     }
-    
+     static func setID() -> String{
+        return UUID().uuidString
+    }
     func encodable() -> Dictionary<String, Any>{
         return
-            [ "name" : self.name ?? "","ingredients" : self.ingredients ?? "", "photos" : self.photos ]
+            [ "name" : self.name ?? "","ingredients" : self.ingredients ?? "", "imageID" : self.imageID ?? "" ]
+    }
+    func setImageID(id : String){
+        
+        self.imageID = id
     }
     
 

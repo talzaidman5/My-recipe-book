@@ -13,6 +13,7 @@ import FirebaseStorage
 class NewRecipe: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     var recipe : Recipe?
     var type : String = ""
+    var id : String = ""
     var counter : Int = 1
     @IBOutlet weak var newRecipe_pickerView_category: UIPickerView!
     var pickerData = [String]()
@@ -56,11 +57,12 @@ class NewRecipe: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate,
                 if self.type == ""{
                     self.type = self.pickerData[0]
                 }
+                
                 let recipe = Recipe(name: self.newRecipe_TXT_name.text!,ingredients: self.newRecipe_TXT_ingredients.text!, type:
-                                    self.type)
+                                        self.type, id : id)
                 db.collection("Users").document((ViewController.user?.email)!).collection("recipes").addDocument(data: [
                                                                                                                     "name": recipe.name as Any,
-                                                                                                                    "ingredients": recipe.ingredients as Any, "type": recipe.type as Any])
+                                                                                                                    "imageID" : id as Any,                           "ingredients": recipe.ingredients as Any, "type": recipe.type as Any])
                 dismiss(animated: true, completion: nil)
             }
         })
@@ -117,11 +119,26 @@ func getAllRecipeName()
             return
         }
         let email = (ViewController.user?.email)!
-            storge.child(email + "/" + newRecipe_TXT_name.text! + ".png").putData(imageData, metadata: nil, completion: {_, error
+        id = Recipe.setID()
+        storge.child(email + "/" + id + ".png").putData(imageData, metadata: nil, completion: {_, error
             in guard error == nil else{
-            print("failed to upload")
-            return
+        let db = Firestore.firestore()
+        db.collection("Users").document((ViewController.user?.email)!).collection("recipes").getDocuments() { (document, err) in
+              if let err = err {
+                  print("Error getting documents: \(err)")
+              } else {
+
+        for document in document!.documents {
+            let nameRecipe = document.get("name") as! String
+            if(nameRecipe == ViewController.user!.name){
+            db.collection("Users").document((ViewController.user?.email)!).collection("recipes").document(document.documentID).updateData(["imageID" : self.id as Any])
+            }
         }
+              
+        }
+        }
+                return
+            }
     })
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

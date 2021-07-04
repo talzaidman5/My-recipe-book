@@ -21,6 +21,7 @@ class TableRowController:  UIViewController, UITableViewDelegate,UITableViewData
         UserDefaults.standard.set(self.recipeList[index].name, forKey: "name")
         UserDefaults.standard.set(self.recipeList[index].ingredients, forKey: "ingredients")
         UserDefaults.standard.set(self.recipeList[index].type, forKey: "type")
+        UserDefaults.standard.set(self.recipeList[index].imageID, forKey: "imageID")
 
       let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let nextViewController = storyBoard.instantiateViewController(withIdentifier: "RecipeController") as! RecipeController
