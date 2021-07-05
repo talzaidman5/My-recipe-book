@@ -27,7 +27,6 @@ class RecipeController: UIViewController{
     var imageEdit = UIImage()
     var lastRecipe : Recipe?
     var image = UIImage()
-    var recipe : Recipe?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.name =  UserDefaults.standard.string(forKey: "name")!
@@ -78,8 +77,6 @@ class RecipeController: UIViewController{
                     if err != nil {
                         print("Error getting documents")
                     } else {
-                        recipe = Recipe(name: self.recipe_TXT_name.text!,ingredients: self.recipe_TXT_ingredients.text!, type:
-                                            self.type, id: (recipe?.imageID)!)
                         let db = Firestore.firestore()
                         db.collection("Users").document((ViewController.user?.email)!).collection("recipes").getDocuments() { (document, err) in
                               if let err = err {
@@ -88,12 +85,9 @@ class RecipeController: UIViewController{
                                   for document in document!.documents {
                                       let nameRecipe = document.get("name") as! String
                                     if(nameRecipe == self.name){
-                                        db.collection("Users").document((ViewController.user?.email)!).collection("recipes").document(document.documentID).updateData(["name" : recipe!.name as Any,
-                                                                                                                                                                       "ingredients": recipe!.ingredients as Any])
+                                        db.collection("Users").document((ViewController.user?.email)!).collection("recipes").document(document.documentID).updateData(["name" : self.recipe_TXT_name.text as Any,
+                                                                                                                                                                       "ingredients": self.recipe_TXT_ingredients.text as Any])
                                         
-                                        let index =  HomeController.recipeList.firstIndex(of: lastRecipe!)
-                                        HomeController.recipeList.remove(at: index!)
-                                        HomeController.recipeList.append(recipe!)
                                         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
                                         let nextViewController = storyBoard.instantiateViewController(withIdentifier: "HomeController") as! HomeController
                                         self.present(nextViewController, animated:true, completion:nil)
